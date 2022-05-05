@@ -1,0 +1,29 @@
+{
+  "name": "scroccotour",
+  "version": "1.0.0",
+  "description": "Applicazione di travel planning con all-in-one booking feature",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomas2710/Scroccotour.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Thomas2710/Scroccotour/issues"
+  },
+  "homepage": "https://github.com/Thomas2710/Scroccotour#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongoose": "^6.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
