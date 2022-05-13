@@ -27,20 +27,21 @@ router.post("/login", async (req, res) => {
 				expiresIn: 86400 // expires in 24 hours
 			}
 			var token = jwt.sign(payload, process.env.JWT_KEY, options);
-			
+			res.status(200)
 			res.json({
 				success: true,
 				message: 'Auth token sent',
 				token: token,
 				username: user.username,
 				id: user._id,
-				self: "api/v1/auth" + user._id
+				self: "api/v1/auth/" + user._id
 			});
 			
 		}
 		
 		else{
-			res.json({ success: false, message: 'Authentication failed. User not found.' });
+			res.status(400)
+			res.json({ success: false, message: 'Autenticazione fallita' });
 		}
 })
 
@@ -53,12 +54,12 @@ router.post("/register", async (req, res) => {
 	})
 	await u.save()
 	res.status(200)
-	res.send("Utente creato")
+	res.json({ success: true, message: 'Registrazione effettuata.' });
 	
 	}
 	catch{
 		res.status(400)
-		res.send("Username già esistente")
+		res.json({ success: false, message: 'Registratione fallita' });
 	}
     
 })
