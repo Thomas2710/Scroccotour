@@ -11,11 +11,35 @@ router.post("/", async (req, res) => {
         return
     }
 
-    if (! req.body.host) {
+    if (! req.body.city) {
         res.status(400)
-        res.send("Host mancante")
+        res.send("Città mancante")
         return
     }
+
+    if (! req.body.beds) {
+        res.status(400)
+        res.send("Letti disponibili mancanti")
+        return
+    }
+
+    if (! req.body.start) {
+        res.status(400)
+        res.send("Inizio disponibilità mancante")
+        return
+    }
+
+    if (! req.body.end) {
+        res.status(400)
+        res.send("Fine disponibilità mancante")
+        return
+    }
+
+    // if (! req.body.host) {
+    //     res.status(400)
+    //     res.send("Host mancante")
+    //     return
+    // }
 
     if (! req.body.image) {
         res.status(400)
@@ -29,10 +53,17 @@ router.post("/", async (req, res) => {
         return
     }
 
+    // TODO: Find host by JWT token
+    let host = "thome"
+
     try{
         const home = new Home({
             address: req.body.address,
-            host: req.body.host,
+            city: req.body.city,
+            beds: req.body.beds,
+            start: req.body.start,
+            end: req.body.end,
+            host: host,
             image: req.body.image,
             tags: req.body.tags
         })
@@ -40,7 +71,8 @@ router.post("/", async (req, res) => {
         res.status(200)
         res.send("Alloggio aggiunto")
     }
-    catch{
+    catch (error) {
+        console.log(error.message)
         res.status(400)
         res.send("Alloggio già esistente")
     }
