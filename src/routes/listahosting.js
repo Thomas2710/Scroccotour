@@ -17,11 +17,13 @@ router.post("/alloggi", async (req, res) => {
     
     r = {meta: req.body.city}
     
-    if(req.body.inizio != undefined && req.body.fine != undefined){
-        r["inizio"] = {$gt: req.body.inizio}
-        r["fine"] = {$lt: req.body.fine}
+
+    if(req.body.start != undefined && req.body.end != undefined){
+        r["start"] = {$gt: req.body.start}
+        r["end"] = {$lt: req.body.end}
     }
     if(req.body.tags != undefined){
+
         t = req.body.tags.split(" ")
         r["tags"] = {$all: t}
         
