@@ -1,14 +1,15 @@
 const mongoose = require("mongoose")
 
 const home = mongoose.Schema({
-	address: { type: String, unique: true },
+
+	address: String,
+    city: String,
+    beds: Number,
+    start: Number,
+    end: Number,
 	host: String,
     image: String,
-    tags: [{type: String}],
-    meta: String,
-    start: Number,
-    end: Number
-
+    tags: [{type: String}]
 })
 
 module.exports = mongoose.model("Home", home);
