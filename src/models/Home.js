@@ -6,8 +6,8 @@ const home = mongoose.Schema({
     image: String,
     tags: [{type: String}],
     meta: String,
-    inizio: Number,
-    fine: Number
+    start: Number,
+    end: Number
 })
 
 module.exports = mongoose.model("Home", home);
