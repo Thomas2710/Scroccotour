@@ -18,7 +18,7 @@ router.post("/login", async (req, res) => {
 		if (user != null){
 
 			var payload = {
-				username: user.username,
+				user: user,
 				id: user._id,
 				// other data encrypted in the token	
 			}
@@ -28,11 +28,11 @@ router.post("/login", async (req, res) => {
 			var token = jwt.sign(payload, process.env.JWT_KEY, options);
 		
 			res.status(200);
-			res.cookie('jwt', token, {httpOnly:true, maxAge: 86400*3});
+			res.cookie('jwt', token, {httpOnly:false, maxAge: 86400*3});
 			res.json({
 				success: true,
 				message: 'Auth token sent',
-				username: user.username,
+				user: user,
 				id: user._id,
 				self: "api/v1/auth/" + user._id
 			});
@@ -63,6 +63,7 @@ router.post("/register", async (req, res) => {
 	}
     
 })
+
 
 
 
