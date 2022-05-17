@@ -3,6 +3,7 @@ const User = require("../models/User") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
+
 String.prototype.hashCode = function() {
     var hash = 0;
     for (var i = 0; i < this.length; i++) {
@@ -26,12 +27,12 @@ router.post("/login", async (req, res) => {
 				expiresIn: 86400 // expires in 24 hours
 			}
 			var token = jwt.sign(payload, process.env.JWT_KEY, options);
-		
-			res.status(200);
 			res.cookie('jwt', token, {httpOnly:false, maxAge: 86400*3});
+			res.status(200)
 			res.json({
 				success: true,
 				message: 'Auth token sent',
+				token: token,
 				user: user,
 				id: user._id,
 				self: "api/v1/auth/" + user._id
@@ -40,31 +41,36 @@ router.post("/login", async (req, res) => {
 		}
 		
 		else{
-			res.status(400);
+			res.status(400)
 			res.json({ success: false, message: 'Autenticazione fallita' });
 		}
 })
 
 router.post("/register", async (req, res) => {
 	try{
-		const u = new User({
-			username: req.body.username,
-			password: req.body.password.hashCode(),
-			email: req.body.email,
-		})
-		await u.save()
-		
-		res.status(200);
-		res.json({ success: true, message: 'Registrazione effettuata.' });
+    const u = new User({
+		username: req.body.username,
+		password: req.body.password.hashCode(),
+		email: req.body.email,
+		km_percorsi: 0,
+		voto_host: 5,
+		voto_guest: 5,
+		meta_preferita: "Nessuna",
+		paesi_visitati: 0,
+		tour_completati:0,
+		guest_accolti:0
+	})
+	await u.save()
+	res.status(200)
+	res.json({ success: true, message: 'Registrazione effettuata.' });
+	
 	}
-	catch(err){
+	catch{
 		res.status(400)
 		res.json({ success: false, message: 'Registratione fallita' });
 	}
     
 })
-
-
 
 
 module.exports = router
