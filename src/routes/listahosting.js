@@ -10,6 +10,11 @@ router.get("/myalloggi", async (req, res) => {
     res.send(alloggi)
 })
 
+router.get("/dettaglio", async (req, res) => {
+    const alloggio = await Home.findById( req.query.id);
+    res.send(alloggio);
+})
+
 router.post("/alloggi", async (req, res) => {
     
     r = {meta: req.body.meta}
