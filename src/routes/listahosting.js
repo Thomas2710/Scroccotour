@@ -17,11 +17,13 @@ router.post("/alloggi", async (req, res) => {
     
     r = {meta: req.body.city}
     
-    if(req.body.start != undeendd && req.body.end != undeendd){
+
+    if(req.body.start != undefined && req.body.end != undefined){
         r["start"] = {$gt: req.body.start}
         r["end"] = {$lt: req.body.end}
     }
-    if(req.body.tags != undeendd){
+    if(req.body.tags != undefined){
+
         t = req.body.tags.split(" ")
         r["tags"] = {$all: t}
         

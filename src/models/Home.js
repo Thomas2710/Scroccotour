@@ -8,6 +8,7 @@ const home = mongoose.Schema({
     meta: String,
     start: Number,
     end: Number
+
 })
 
 module.exports = mongoose.model("Home", home);

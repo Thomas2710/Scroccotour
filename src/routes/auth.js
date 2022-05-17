@@ -19,7 +19,7 @@ router.post("/login", async (req, res) => {
 		if (user != null){
 
 			var payload = {
-				username: user.username,
+				user: user,
 				id: user._id,
 				// other data encrypted in the token	
 			}
@@ -27,12 +27,13 @@ router.post("/login", async (req, res) => {
 				expiresIn: 86400 // expires in 24 hours
 			}
 			var token = jwt.sign(payload, process.env.JWT_KEY, options);
+			res.cookie('jwt', token, {httpOnly:false, maxAge: 86400*3});
 			res.status(200)
 			res.json({
 				success: true,
 				message: 'Auth token sent',
 				token: token,
-				username: user.username,
+				user: user,
 				id: user._id,
 				self: "api/v1/auth/" + user._id
 			});
@@ -51,6 +52,13 @@ router.post("/register", async (req, res) => {
 		username: req.body.username,
 		password: req.body.password.hashCode(),
 		email: req.body.email,
+		km_percorsi: 0,
+		voto_host: 5,
+		voto_guest: 5,
+		meta_preferita: "Nessuna",
+		paesi_visitati: 0,
+		tour_completati:0,
+		guest_accolti:0
 	})
 	await u.save()
 	res.status(200)
