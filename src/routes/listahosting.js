@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 router.get("/myalloggi", async (req, res) => {
     
-    const alloggi = await Home.find({ host: req.User.username })
+    const alloggi = await Home.find({ host: req.User.user.username })
     console.log(alloggi)
     res.send(alloggi)
 })
