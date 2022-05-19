@@ -14,6 +14,8 @@ const auth = require("./routes/auth.js")
 const listahosting = require("./routes/listahosting.js")
 const tokenChecker = require('./routes/tokenChecker.js');
 const home = require("./routes/home")
+const tour = require("./routes/tour")
+
 
 // Express app
 
@@ -25,7 +27,8 @@ app.use("/api/v1/lista-hosting", tokenChecker)
 app.use("/api/v1/lista-hosting", listahosting)
 app.use("/api/v1/home", tokenChecker)
 app.use("/api/v1/home", home)
-
+app.use("/api/v1/tour", tokenChecker)
+app.use("/api/v1/tour", tour)
 
 app.locals.db = mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 
