@@ -3,6 +3,12 @@ const Tour = require("../models/Tour") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
+
+async function getTourId(json){
+    const tour = await Tour.find({start: json.start, end:json.end ,people: json.people,owner: json.owner});
+    return tour._id
+
+}
 router.post("/newtour", async (req, res) => {
 	try{
     var start =  Date.parse(req.body.start)/1000
@@ -63,8 +69,10 @@ router.post("/newtour", async (req, res) => {
 
 
 
+
 router.get("/getTour", async (req, res) => {
     const tour = await Tour.findById( req.query.id);
     res.send(tour);
 })
+
 module.exports = router
