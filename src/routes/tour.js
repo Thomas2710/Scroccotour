@@ -49,7 +49,7 @@ router.post("/newtour", async (req, res) => {
     
 	//await u.save()
 	res.status(200)
-	res.json({ success: true, message: 'Tour creato' });
+	res.json(json);
 	
 	}
 	catch (error){
