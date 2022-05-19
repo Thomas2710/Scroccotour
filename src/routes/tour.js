@@ -3,12 +3,20 @@ const Tour = require("../models/Tour") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
+const saveTour = async (updatedTour, shouldBook) => {
+    const tourToUpdate = await Tour.findById(updatedTour._id);
 
-async function getTourId(json){
-    const tour = await Tour.find({start: json.start, end:json.end ,people: json.people,owner: json.owner});
-    return tour._id
+    tourToUpdate.cities = updatedTour.cities;
+    tourToUpdate.homes = updatedTour.homes;
 
+    if (shouldBook) {
+        tourToUpdate.booked = true;
+    }
+
+    const savedTour = await tourToUpdate.save();
+    return savedTour;
 }
+
 router.post("/newtour", async (req, res) => {
 	try{
     var start =  Date.parse(req.body.start)/1000
@@ -56,7 +64,7 @@ router.post("/newtour", async (req, res) => {
     
 	await u.save()
 	res.status(200)
-	res.json(json);
+	res.json(u);
 	
 	}
 	catch (error){
@@ -67,8 +75,29 @@ router.post("/newtour", async (req, res) => {
     
 })
 
+router.post('/save', async (req, res) => {
+    if (! req.body.tour) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tour mancante'});
+    }
 
+    const updatedTour = JSON.parse(req.body.tour);
+    const newTour = await saveTour(updatedTour, false);
 
+    res.send(newTour)
+})
+
+router.post('/book', async (req, res) => {
+    if (! req.body.tour) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tour mancante'});
+    }
+ 
+    const updatedTour = JSON.parse(req.body.tour);
+    const newTour = await saveTour(updatedTour, true);
+
+    res.send(newTour)
+})
 
 router.get("/getTour", async (req, res) => {
     const tour = await Tour.findById( req.query.id);
