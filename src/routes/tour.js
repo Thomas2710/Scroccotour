@@ -16,6 +16,7 @@ router.post("/newtour", async (req, res) => {
             end: end,
             people: req.body.people,
             cities: [],
+            homes: [],
             likes: 0,
             completed: 0,
             booked: 0,
@@ -36,18 +37,18 @@ router.post("/newtour", async (req, res) => {
             end: end,
             people: req.body.people,
             cities: randomtour.cities,
+            homes: randomtour.cities,
             likes: 0,
             completed: 0,
             booked: 0,
-            nights_remaining: 0
+            nights_remaining: (end-start)/(60*60*24)
         }
 
 
     }
-    console.log(json)
     var u = new Tour(json)
     
-	//await u.save()
+	await u.save()
 	res.status(200)
 	res.json(json);
 	
