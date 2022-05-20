@@ -17,6 +17,22 @@ const saveTour = async (updatedTour, shouldBook) => {
     return savedTour;
 }
 
+const updateTour = async (cityId, tourId, city ) => {
+    const tourToUpdate = await Tour.findById(tourId);
+
+    if(tourToUpdate != null){
+    tourToUpdate.homes.push(cityId);
+    tourToUpdate.cities.push(city);
+    
+
+    const savedTour = await tourToUpdate.save();
+    return savedTour;
+    }
+    else{
+        return null
+    }
+}
+
 router.post("/newtour", async (req, res) => {
 	try{
     var start =  Date.parse(req.body.start)/1000
@@ -97,6 +113,33 @@ router.post('/book', async (req, res) => {
     const newTour = await saveTour(updatedTour, true);
 
     res.send(newTour)
+})
+
+router.post('/addCity', async (req, res) => {
+    if (! req.body.tourId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tour mancante'});
+    }
+    if (! req.body.cityId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro alloggio mancante'});
+    }
+    if (! req.body.start) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro startDate mancante'});
+    }
+    if (! req.body.end) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro endDate mancante'});
+    }
+    if (! req.body.end) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro città mancante'});
+    }
+    console.log(req.body)
+    const newTour = await updateTour(req.body.id,);
+    res.status(200);
+    res.send(newTour);
 })
 
 router.get("/getTour", async (req, res) => {

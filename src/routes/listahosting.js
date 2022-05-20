@@ -14,23 +14,23 @@ router.get("/dettaglio", async (req, res) => {
 })
 
 router.post("/alloggi", async (req, res) => {
-    
-    r = {meta: req.body.city}
-    
-
+    r = {city: req.body.city}
+    console.log(req.body.tags)
     if(req.body.start != undefined && req.body.end != undefined){
-        r["start"] = {$gt: req.body.start}
-        r["end"] = {$lt: req.body.end}
+        var start = Number(req.body.start)
+        var end = Number(req.body.end)
+        r["start"] = {$lte: start}
+        r["end"] = {$gte: end}
     }
+
     if(req.body.tags != undefined){
-
-        t = req.body.tags.split(" ")
+        console.log(req.body.tags)
+        t = req.body.tags
         r["tags"] = {$all: t}
-        
     }
-
+    //console.log(r);
     const alloggi = await Home.find(r)
-    console.log(alloggi)
+    //console.log(alloggi)
     res.send(alloggi)
 })
 module.exports = router
