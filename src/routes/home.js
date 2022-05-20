@@ -35,12 +35,6 @@ router.post("/", async (req, res) => {
         return
     }
 
-    // if (! req.body.host) {
-    //     res.status(400)
-    //     res.send("Host mancante")
-    //     return
-    // }
-
     if (! req.body.image) {
         res.status(400)
         res.send("Immagine mancante")
@@ -53,7 +47,10 @@ router.post("/", async (req, res) => {
         return
     }
 
-    let host = req.User.username
+
+    const host = req.User.user.username;
+    const tags = req.body.tags.trim().split(',');
+
 
     try{
         const home = new Home({
@@ -64,22 +61,26 @@ router.post("/", async (req, res) => {
             end: req.body.end,
             host: host,
             image: req.body.image,
-            tags: req.body.tags
+            tags: tags
         })
         await home.save()
         res.status(200)
+
         res.json({
             success: true,
             message: "Alloggio aggiunto!"
         })
+
     }
     catch (error) {
         console.log(error.message)
         res.status(400)
+
         res.json({
             success: false,
             message: "Alloggio già esistente"
         })
+
     }
 })
 
