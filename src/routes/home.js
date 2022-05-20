@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
         return
     }
 
-    const host = req.User.username;
+    const host = req.User.user.username;
     const tags = req.body.tags.trim().split(',');
 
     try{
