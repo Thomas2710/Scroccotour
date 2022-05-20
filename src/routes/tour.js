@@ -17,20 +17,15 @@ const saveTour = async (updatedTour, shouldBook) => {
     return savedTour;
 }
 
-const updateTour = async (cityId, tourId, city ) => {
+const updateTour = async (tourId, cityId, city ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
-    if(tourToUpdate != null){
     tourToUpdate.homes.push(cityId);
     tourToUpdate.cities.push(city);
     
 
     const savedTour = await tourToUpdate.save();
     return savedTour;
-    }
-    else{
-        return null
-    }
 }
 
 router.post("/newtour", async (req, res) => {
@@ -136,8 +131,7 @@ router.post('/addCity', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro città mancante'});
     }
-    console.log(req.body)
-    const newTour = await updateTour(req.body.id,);
+    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city);
     res.status(200);
     res.send(newTour);
 })
