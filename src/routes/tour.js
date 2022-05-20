@@ -10,7 +10,7 @@ const saveTour = async (updatedTour, shouldBook) => {
     tourToUpdate.homes = updatedTour.homes;
 
     if (shouldBook) {
-        tourToUpdate.booked = true;
+        tourToUpdate.booked = 1;
     }
 
     const savedTour = await tourToUpdate.save();
