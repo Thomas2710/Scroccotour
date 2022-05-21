@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:8081",
+  origin: process.env.ALLOWED_ORIGIN,
   credentials: true
 }));
 
