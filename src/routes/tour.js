@@ -17,6 +17,7 @@ const saveTour = async (updatedTour, shouldBook) => {
     return savedTour;
 }
 
+//Funzione che aggiunge a un tour nel DB un alloggio
 const updateTour = async (tourId, cityId, city ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
@@ -110,6 +111,7 @@ router.post('/book', async (req, res) => {
     res.send(newTour)
 })
 
+//API per aggiungere un alloggio ad un tour
 router.post('/addCity', async (req, res) => {
     if (! req.body.tourId) {
         res.status(404);
