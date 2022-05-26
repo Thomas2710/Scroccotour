@@ -34,6 +34,7 @@ const updateTour = async (tourId, cityId, city ) => {
     const savedTour = await tourToUpdate.save();
     return savedTour;
 }
+
 //Route that starts the creation of a Tour.
 //Depending on the "selection" parameter, the Tour is initially created with different parameters.
 //Returns the newly created tour object
@@ -119,6 +120,62 @@ router.post('/book', async (req, res) => {
     const newTour = await saveTour(updatedTour, true);
 
     res.send(newTour)
+})
+//Route that copies a tour and resets its homes.
+//Returns the tour object
+router.post('/copy', async (req, res) => {
+    if (! req.body.tourId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tourId mancante'});
+    }
+
+    const targetTour = await Tour.findById(tourId);
+
+
+    const newTour = await Tour({
+        name: "Tour",
+        owner: req.User.user.username,
+        start: req.body.start,
+        end: req.body.end,
+        people: req.body.people,
+        cities: targetTour.cities,
+        homes: targetTour.cities, // Not a bug, this way homes are just placeholders
+        likes: 0,
+        completed: 0,
+        booked: 0,
+        nights_remaining: (req.body.end - req.body.start)/(60*60*24)
+    })
+
+
+    res.send(newTour)
+})
+//Route that modifies a tour
+//Returns the tour object
+router.post('/edit', async (req, res) => {
+    if (! req.body.tourId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tourId mancante'});
+    }
+
+    const tour = await Tour.findById(tourId);
+
+    // Apply changes
+    if (req.body.name) {
+        tour.name = req.body.name;
+    }
+
+    if (req.body.city && req.body.home) {
+        for (let i = 0; i < tour.cities.length; i++) {
+            if (tour.cities[i] == req.body.city) {
+                tour.cities[i] = req.body.home;
+            }
+        }
+    }
+
+    // Save the tour
+    const updatedTour = await tour.save();
+
+    res.send(updatedTour)
 })
 //Route that updates the Tour document when a new city is added
 //Returns the updated Tour object
