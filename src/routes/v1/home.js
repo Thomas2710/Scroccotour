@@ -1,8 +1,13 @@
+///
+/// This files contains the backend APIs regarding functions that allow to add a new home to the user account
+///
+
 const express = require("express")
-const Home = require("../models/Home")
+const Home = require("../../models/Home")
 const router = express.Router()
 
-// TODO: Add host verification via JWT tokens
+//Route that, upon verifying that correct parameters have been sent, adds a new Home document to the database
+//Returns some status json for frontend purposes
 router.post("/", async (req, res) => {
     // Checking parameters
     if (! req.body.address) {

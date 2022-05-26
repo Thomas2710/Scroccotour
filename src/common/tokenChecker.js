@@ -1,3 +1,7 @@
+///
+/// This file contain the filter applyied to every API route that requires to be logged in
+///
+
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 const tokenChecker = function(req, res, next) {
