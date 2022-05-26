@@ -3,7 +3,7 @@
 ///
 
 const express = require("express")
-const Home = require("../models/Home")
+const Home = require("../../models/Home")
 const router = express.Router()
 
 //Route that, upon verifying that correct parameters have been sent, adds a new Home document to the database
