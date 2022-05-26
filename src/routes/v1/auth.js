@@ -1,9 +1,13 @@
+///
+/// This files contains the backend APIs regarding the login and register functionalities
+///
+
 const express = require("express")
-const User = require("../models/User") // new
+const User = require("../../models/User") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-
+//Simple hashing function for strings
 String.prototype.hashCode = function() {
     var hash = 0;
     for (var i = 0; i < this.length; i++) {
@@ -13,7 +17,8 @@ String.prototype.hashCode = function() {
     }
     return hash;
 }
-
+//Route that returns user information as well as the jwt token
+//Returns the user and token information if the login succeded
 router.post("/login", async (req, res) => {
 		const user = await User.findOne({ username: req.body.username , password: req.body.password.hashCode()})
 		if (user != null){
@@ -45,7 +50,8 @@ router.post("/login", async (req, res) => {
 			res.json({ success: false, message: 'Autenticazione fallita' });
 		}
 })
-
+//Route that insert the new user in the database
+//Returns some status json for frontend purposes
 router.post("/register", async (req, res) => {
 	try{
     const u = new User({

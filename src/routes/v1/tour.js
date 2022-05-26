@@ -1,9 +1,15 @@
+///
+/// This file contain the filter applyied to every API route that requires to be logged in
+///
+
 const express = require("express")
-const Tour = require("../models/Tour") // new
-const User = require("../models/User")
+const Tour = require("../../models/Tour") // new
+const User = require("../../models/User")
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
+
+//Function that saves unfinished Tours and/or book the entire Tour. Returns the updated Tour object
 const saveTour = async (updatedTour, shouldBook) => {
     const tourToUpdate = await Tour.findById(updatedTour._id);
 
@@ -18,7 +24,6 @@ const saveTour = async (updatedTour, shouldBook) => {
     return savedTour;
 }
 
-//Funzione che aggiunge a un tour nel DB un alloggio
 const updateTour = async (tourId, cityId, city ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
@@ -29,7 +34,9 @@ const updateTour = async (tourId, cityId, city ) => {
     const savedTour = await tourToUpdate.save();
     return savedTour;
 }
-
+//Route that starts the creation of a Tour.
+//Depending on the "selection" parameter, the Tour is initially created with different parameters.
+//Returns the newly created tour object
 router.post("/newtour", async (req, res) => {
 	try{
     var start =  Date.parse(req.body.start)/1000
@@ -87,7 +94,8 @@ router.post("/newtour", async (req, res) => {
 	}
     
 })
-
+//Route that starts the saving process of a Tour. Return the updated Tour object.
+//Returns the Tour object
 router.post('/save', async (req, res) => {
     if (! req.body.tour) {
         res.status(404);
@@ -99,7 +107,8 @@ router.post('/save', async (req, res) => {
 
     res.send(newTour)
 })
-
+//Route that booking the saving process of a tour.
+//Returns the updated Tour object
 router.post('/book', async (req, res) => {
     if (! req.body.tour) {
         res.status(404);
@@ -111,8 +120,8 @@ router.post('/book', async (req, res) => {
 
     res.send(newTour)
 })
-
-//API per aggiungere un alloggio ad un tour
+//Route that updates the Tour document when a new city is added
+//Returns the updated Tour object
 router.post('/addCity', async (req, res) => {
     if (! req.body.tourId) {
         res.status(404);
@@ -138,7 +147,8 @@ router.post('/addCity', async (req, res) => {
     res.status(200);
     res.send(newTour);
 })
-
+//Route that allow to retrieve a Tour document given its id
+//Returns the Tour object
 router.get("/getTour", async (req, res) => {
     const tour = await Tour.findById( req.query.id);
     res.send(tour);
