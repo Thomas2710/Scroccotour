@@ -3,7 +3,7 @@
 ///
 
 const express = require("express")
-const User = require("../models/User") // new
+const User = require("../../models/User") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 

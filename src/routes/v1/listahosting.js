@@ -3,7 +3,7 @@
 ///
 
 const express = require("express")
-const Home = require("../models/Home") // new
+const Home = require("../../models/Home") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 

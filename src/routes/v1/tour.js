@@ -3,7 +3,7 @@
 ///
 
 const express = require("express")
-const Tour = require("../models/Tour") // new
+const Tour = require("../../models/Tour") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
