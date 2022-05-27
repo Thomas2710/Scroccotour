@@ -10,7 +10,8 @@ const user = mongoose.Schema({
 	meta_preferita: String,
 	paesi_visitati: Number,
 	tour_completati: Number,
-	guest_accolti: Number
+	guest_accolti: Number,
+	tour_preferiti: [{type : String}],
 })
 
 module.exports = mongoose.model("User", user);

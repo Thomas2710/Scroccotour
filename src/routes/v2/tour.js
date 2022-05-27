@@ -3,7 +3,8 @@
 ///
 
 const express = require("express")
-const Tour = require("../../models/Tour") // new
+const Tour = require("../../models/Tour")
+const User = require("../../models/User") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
@@ -23,6 +24,7 @@ const saveTour = async (updatedTour, shouldBook) => {
     return savedTour;
 }
 
+//Funzione che aggiunge a un tour nel DB un alloggio
 const updateTour = async (tourId, cityId, city ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
@@ -33,6 +35,7 @@ const updateTour = async (tourId, cityId, city ) => {
     const savedTour = await tourToUpdate.save();
     return savedTour;
 }
+
 //Route that starts the creation of a Tour.
 //Depending on the "selection" parameter, the Tour is initially created with different parameters.
 //Returns the newly created tour object
@@ -119,6 +122,62 @@ router.post('/book', async (req, res) => {
 
     res.send(newTour)
 })
+//Route that copies a tour and resets its homes.
+//Returns the tour object
+router.post('/copy', async (req, res) => {
+    if (! req.body.tourId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tourId mancante'});
+    }
+
+    const targetTour = await Tour.findById(tourId);
+
+
+    const newTour = await Tour({
+        name: "Tour",
+        owner: req.User.user.username,
+        start: req.body.start,
+        end: req.body.end,
+        people: req.body.people,
+        cities: targetTour.cities,
+        homes: targetTour.cities, // Not a bug, this way homes are just placeholders
+        likes: 0,
+        completed: 0,
+        booked: 0,
+        nights_remaining: (req.body.end - req.body.start)/(60*60*24)
+    })
+
+
+    res.send(newTour)
+})
+//Route that modifies a tour
+//Returns the tour object
+router.post('/edit', async (req, res) => {
+    if (! req.body.tourId) {
+        res.status(404);
+        res.json({success: false, message: 'Parametro tourId mancante'});
+    }
+
+    const tour = await Tour.findById(tourId);
+
+    // Apply changes
+    if (req.body.name) {
+        tour.name = req.body.name;
+    }
+
+    if (req.body.city && req.body.home) {
+        for (let i = 0; i < tour.cities.length; i++) {
+            if (tour.cities[i] == req.body.city) {
+                tour.cities[i] = req.body.home;
+            }
+        }
+    }
+
+    // Save the tour
+    const updatedTour = await tour.save();
+
+    res.send(updatedTour)
+})
 //Route that updates the Tour document when a new city is added
 //Returns the updated Tour object
 router.post('/addCity', async (req, res) => {
@@ -151,6 +210,76 @@ router.post('/addCity', async (req, res) => {
 router.get("/getTour", async (req, res) => {
     const tour = await Tour.findById( req.query.id);
     res.send(tour);
+})
+
+//Aggiunge un like di un utente a un tour
+router.post("/like", async (req, res) =>{
+    const user = req.User.user.username;
+    const utente = await User.findOne({username : user});
+    if(utente.tour_preferiti.includes(req.body.id)){
+        res.status(400);
+        res.json({success: false, message: "Tour già messo nei preferiti"})
+    }
+    else{
+        utente.tour_preferiti.push(req.body.id);
+        const utenteUpdated = await utente.save();
+        const tour = await Tour.findById(req.body.id);
+        tour.likes +=1;
+        const updatedTour = await tour.save();
+        res.status(200);
+        res.json({success: true});
+    }
+})
+
+//Toglie un like di un utente da un tour
+router.post("/dislike", async (req, res) =>{
+    const user = req.User.user.username;
+    const utente = await User.findOne({username : user});
+    if(utente.tour_preferiti.includes(req.body.id)){
+        //Rimuovo l'item dall'array dei preferiti
+        utente.tour_preferiti.splice(utente.tour_preferiti.indexOf(req.body.id),1);
+        const utenteUpdated = await utente.save();
+        const tour = await Tour.findById(req.body.id);
+        tour.likes -=1;
+        const updatedTour = await tour.save();
+        res.status(200);
+        res.json({success: true});
+    }
+    else{
+        res.status(400);
+        res.json({success: false, message: "Il tour non era nei preferiti"});
+    }
+})
+
+//Controllo se un tour è nei preferiti dell'utente
+router.get("/isFavourite", async (req, res) => {
+    const user = req.User.user.username;
+    const utente = await User.findOne({username : user});
+    if(utente.tour_preferiti.includes(req.query.id)){
+        res.json({favourite : true});
+    }
+    else{
+        res.json({favourite : false});
+    }
+})
+
+
+//Ritorna la lista dei tour in ordine crescente di likes
+router.get("/topTour", async (req, res) => {
+    const tours = await Tour.find({completed: 1});
+    tours.sort((a,b) => {
+        return b.likes - a.likes;
+    });
+    res.status(200);
+    res.send(tours);
+
+})
+
+router.get("/myTours", async (req, res) => {
+    const user = req.User.user.username;
+    const myTours = await Tour.find({owner : user, booked : 1});
+    res.status(200);
+    res.send(myTours);
 })
 
 module.exports = router
