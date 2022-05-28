@@ -20,6 +20,8 @@ String.prototype.hashCode = function() {
 //Route that returns user information as well as the jwt token
 //Returns the user and token information if the login succeded
 router.post("/login", async (req, res) => {
+		console.log(req.body.username)
+		console.log(req.body.password.hashCode())
 		const user = await User.findOne({ username: req.body.username , password: req.body.password.hashCode()})
 		if (user != null){
 

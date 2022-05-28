@@ -3,9 +3,9 @@
 ///
 
 const express = require("express")
-const User = require("../models/User") 
-const Tour = require("../models/Tour") 
-const Home = require("../models/Home")
+const User = require("../../models/User") 
+const Tour = require("../../models/Tour") 
+const Home = require("../../models/Home")
 const router = express.Router()
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
@@ -67,7 +67,7 @@ router.post('/addGuestReview', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'username guest mancante'});
     }
-    console.log(req.body)
+    
     let pulizia, puntualità, generale, commento
     pulizia = parseInt(req.body.pulizia)
     puntualita = parseInt(req.body.puntualita)
@@ -86,7 +86,6 @@ router.post('/addGuestReview', async (req, res) => {
         commento = ""
     }
     var guest = await User.findOne({username: req.body.guest})
-    console.log(guest)
     guest.recensioni_come_guest.push({
         da: req.User.user.username,
         pulizia: pulizia,
@@ -104,14 +103,11 @@ router.post('/addGuestReview', async (req, res) => {
 
 router.post('/getHomeReviews', async (req, res) => {
     var home = await Home.findById(req.body.id)
-    console.log(home)
     var list = []
     var host = await User.findOne({username: home.host})
-    console.log(host)
     
     host.recensioni_come_host.forEach(rev => {
         if(rev.home == req.body.id){
-            console.log(rev)
             list.push(rev)
         }
     })
@@ -119,27 +115,80 @@ router.post('/getHomeReviews', async (req, res) => {
 })
 
 router.get('/getHostToReview',async(req,res)=>{
-    var tour = await Tour.find({owner: req.User.user.username, completated: 1, booked: 1})
+    var tour = await Tour.find({owner: req.User.user.username, completed: 1, booked: 1})
     var alloggi = []
     
     tour.forEach( t => {
         t.homes.forEach(a => {
             alloggi.push(a)
         })
-        
-        
         })
     var list = []
     for(i=0;i<alloggi.length;i++){
+        try{
         var h = await Home.findById(alloggi[i])
-        list.push(h.host)
+        var u = await User.findOne({username: h.host})
+        var flag = 0
+        for(j=0;j<u.recensioni_come_host.length;j++){
+            if(u.recensioni_come_host[j].da == req.User.user.username){
+                flag = 1
+            }
+        }
+        if(flag==0)
+            list.push({"host": h.host,"city":h.city})
+        }
+        catch{}
         
     }
     const l = new Set(list)
     const json = JSON.stringify(Array.from(l))
     res.send(json)
 })
+router.get('/getGuestToReview',async(req,res)=>{
+    var home = await Home.find({owner: req.User.user.username})
+    var guests = []
+    
+    /*home.forEach( h => {
+        if("bookings" in h){
+            h.bookings.forEach(b => {
+                if(b!=null && "guest" in b)
+                    var u = await Home.find({owner: req.User.user.username})
+                    guests.push(b.guest)
+                }) 
+            }  
+    })*/
 
+    for(var h of home){
+        if("bookings" in h){
+            for(var b of h.bookings){
+                if(b!=null && "guest" in b){
+                    var u = await User.findOne({username: b.guest})
+                    var flag = 0
+                    for(var k of u.recensioni_come_guest){
+                        if(k.da == req.User.user.username){
+                            flag = 1
+                        }
+                    }
+                    if(flag==0){
+                        guests.push(b.guest)
+                    }
+                }
+            }
+        }
+    }
+    const l = new Set(guests)
+    const json = JSON.stringify(Array.from(l))
+    res.send(json)
+})
+
+router.get('/getreviewsashost',async(req,res)=>{
+    var u = await User.findById(req.User.id)
+    res.json(u.recensioni_come_host)
+})
+router.get('/getreviewsasguest',async(req,res)=>{
+    var u = await User.findById(req.User.id)
+    res.json(u.recensioni_come_guest)
+})
 module.exports = router
 
 

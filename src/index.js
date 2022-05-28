@@ -15,6 +15,7 @@ const auth_v1 = require("./routes/v1/auth.js")
 const listahosting_v1 = require("./routes/v1/listahosting.js")
 const home_v1 = require("./routes/v1/home")
 const tour_v1 = require("./routes/v1/tour")
+const reviews_v1 = require("./routes/v1/reviews")
 
 // V2 routes
 const auth_v2 = require("./routes/v2/auth.js")
@@ -36,6 +37,8 @@ app.use("/api/v1/home", tokenChecker)
 app.use("/api/v1/home", home_v1)
 app.use("/api/v1/tour", tokenChecker)
 app.use("/api/v1/tour", tour_v1)
+app.use("/api/v1/reviews", tokenChecker)
+app.use("/api/v1/reviews", reviews_v1)
 
 // V2
 app.use("/api/v2/auth", auth_v2);
