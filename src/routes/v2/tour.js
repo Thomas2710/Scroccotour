@@ -11,11 +11,12 @@ const Home = require("../../models/Home");
 
 
 //Function that saves unfinished Tours and/or book the entire Tour. Returns the updated Tour object
-const saveTour = async (updatedTour, shouldBook, guestId, start, end) => {
+const saveTour = async (updatedTour, shouldBook, guestId) => {
     const tourToUpdate = await Tour.findById(updatedTour._id);
 
     tourToUpdate.cities = updatedTour.cities;
     tourToUpdate.homes = updatedTour.homes;
+    tourToUpdate.dates = updatedTour.dates;
 
     if (shouldBook) {
         tourToUpdate.booked = 1;
@@ -34,6 +35,7 @@ const saveTour = async (updatedTour, shouldBook, guestId, start, end) => {
     }
 
     const savedTour = await tourToUpdate.save();
+    console.log(savedTour);
     return savedTour;
 }
 
@@ -128,7 +130,7 @@ router.post('/save', async (req, res) => {
     }
 
     const updatedTour = JSON.parse(req.body.tour);
-    const newTour = await saveTour(updatedTour, false);
+    const newTour = await saveTour(updatedTour, false, "");
 
     res.send(newTour)
 })
@@ -139,9 +141,11 @@ router.post('/book', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro tour mancante'});
     }
+
+    const guest = req.User.user.username;
  
     const updatedTour = JSON.parse(req.body.tour);
-    const newTour = await saveTour(updatedTour, true);
+    const newTour = await saveTour(updatedTour, true, guest);
 
     res.send(newTour)
 })
