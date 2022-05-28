@@ -9,6 +9,7 @@ const tour = mongoose.Schema({
     end: Number,
     cities: [{type: String}],
     homes: [{type: String}],
+    dates: [{start: Number, end: Number}],
     likes:Number,
     completed: Number,
     booked: Number,

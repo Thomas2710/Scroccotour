@@ -13,6 +13,7 @@ const user = mongoose.Schema({
 	guest_accolti: Number,
 	recensioni_come_host: [{type: Object}],
 	recensioni_come_guest: [{type: Object}],
+	tour_preferiti: [{type : String}],
 })
 
 module.exports = mongoose.model("User", user);

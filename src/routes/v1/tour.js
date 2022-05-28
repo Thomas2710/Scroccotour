@@ -3,7 +3,8 @@
 ///
 
 const express = require("express")
-const Tour = require("../models/Tour") // new
+const Tour = require("../../models/Tour") // new
+const User = require("../../models/User")
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 
@@ -138,7 +139,7 @@ router.post('/addCity', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro endDate mancante'});
     }
-    if (! req.body.end) {
+    if (! req.body.city) {
         res.status(404);
         res.json({success: false, message: 'Parametro città mancante'});
     }
@@ -152,5 +153,38 @@ router.get("/getTour", async (req, res) => {
     const tour = await Tour.findById( req.query.id);
     res.send(tour);
 })
+
+router.post("/favourite", async (req, res) =>{
+    const user = req.User.user.username;
+    const utente = await User.findById(user);
+    if(utente.tour_preferiti.includes(req.tourId)){
+        res.status(400);
+        res.json({success: false, message: "Tour già messo nei preferiti"})
+    }
+    else{
+        utente.tour_preferiti.push(req.tourId);
+        const utenteUpdated = await utente.save();
+
+        const tour = await Tour.findById(req.tourId);
+        tour.likes +=1;
+        const updatedTour = await tour.save();
+
+
+        res.status(200);
+        res.send(updatedTour);
+    }
+    
+})
+
+router.get("/topTour", async (req, res) => {
+    const tours = await Tour.find({completed: 1});
+    tours.sort((a,b) => {
+        return a.likes - b.likes;
+    });
+    res.status(200);
+    res.send(tours);
+
+})
+
 
 module.exports = router
