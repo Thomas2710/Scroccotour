@@ -24,7 +24,7 @@ const saveTour = async (updatedTour, shouldBook) => {
 }
 
 //Funzione che aggiunge a un tour nel DB un alloggio
-const updateTour = async (tourId, cityId, city ) => {
+const updateTour = async (tourId, cityId, city, start, end ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
     tourToUpdate.homes.push(cityId);
@@ -196,11 +196,11 @@ router.post('/addCity', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro endDate mancante'});
     }
-    if (! req.body.end) {
+    if (! req.body.city) {
         res.status(404);
         res.json({success: false, message: 'Parametro città mancante'});
     }
-    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city);
+    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city, req.body.start, req.body.end);
     res.status(200);
     res.send(newTour);
 })
