@@ -27,6 +27,8 @@ router.post("/alloggi", async (req, res) => {
     r = {city: req.body.city}
     console.log(req.body.tags)
     if(req.body.start != undefined && req.body.end != undefined){
+        console.log(start)
+        console.log(end)
         var start = Number(req.body.start)
         var end = Number(req.body.end)
         r["start"] = {$lte: start}

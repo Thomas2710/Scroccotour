@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN,
+  origin: "http://localhost:8081",
   credentials: true
 }));
 
@@ -15,6 +15,7 @@ const listahosting = require("./routes/listahosting.js")
 const tokenChecker = require('./routes/tokenChecker.js');
 const home = require("./routes/home")
 const tour = require("./routes/tour")
+const reviews= require("./routes/reviews")
 
 
 // Express app
@@ -29,6 +30,8 @@ app.use("/api/v1/home", tokenChecker)
 app.use("/api/v1/home", home)
 app.use("/api/v1/tour", tokenChecker)
 app.use("/api/v1/tour", tour)
+app.use("/api/v1/reviews", tokenChecker)
+app.use("/api/v1/reviews", reviews)
 
 app.locals.db = mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 
