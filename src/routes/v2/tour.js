@@ -11,7 +11,7 @@ const Home = require("../../models/Home");
 
 
 //Function that saves unfinished Tours and/or book the entire Tour. Returns the updated Tour object
-const saveTour = async (updatedTour, shouldBook, guestId) => {
+const saveTour = async (updatedTour, shouldBook, guestId, start, end) => {
     const tourToUpdate = await Tour.findById(updatedTour._id);
 
     tourToUpdate.cities = updatedTour.cities;
@@ -38,12 +38,13 @@ const saveTour = async (updatedTour, shouldBook, guestId) => {
 }
 
 //Funzione che aggiunge a un tour nel DB un alloggio
-const updateTour = async (tourId, cityId, city, start, end ) => {
+const updateTour = async (tourId, cityId, city, start, end, nights ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
     tourToUpdate.homes.push(cityId);
     tourToUpdate.cities.push(city);
-    
+    tourToUpdate.dates.push({start: start, end: end});
+    tourToUpdate.nights_remaining -= nights/(60*60*24*1000);
 
     const savedTour = await tourToUpdate.save();
     return savedTour;
@@ -232,7 +233,7 @@ router.post('/addCity', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro città mancante'});
     }
-    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city, req.body.start, req.body.end);
+    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city, req.body.start, req.body.end, req.body.nights);
     res.status(200);
     res.send(newTour);
 })
