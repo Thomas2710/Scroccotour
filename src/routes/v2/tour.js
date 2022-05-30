@@ -248,4 +248,9 @@ router.get("/getTour", async (req, res) => {
     res.send(tour);
 })
 
+router.get("/searchTour", async (req, res) => {
+    const tours = await Tour.find(req.query.name);
+    res.send(tours);
+})
+
 module.exports = router
