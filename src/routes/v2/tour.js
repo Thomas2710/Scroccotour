@@ -9,6 +9,7 @@ const router = express.Router()
 const jwt = require('jsonwebtoken'); 
 const { update } = require("../../models/Tour");
 const Home = require("../../models/Home");
+const { query } = require("express");
 
 
 //Function that saves unfinished Tours and/or book the entire Tour. Returns the updated Tour object
@@ -250,8 +251,10 @@ router.get("/getTour", async (req, res) => {
 })
 
 router.get("/searchTour", async (req, res) => {
-    const tours = await Tour.find(req.query.name);
+    const tours = await Tour.find({name: req.query.name, completed: 1});
     res.send(tours);
+})
+
 //Aggiunge un like di un utente a un tour
 router.post("/like", async (req, res) =>{
     const user = req.User.user.username;
