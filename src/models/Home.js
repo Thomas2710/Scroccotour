@@ -9,6 +9,7 @@ const home = mongoose.Schema({
     end: Number,
 	host: String,
     image: String,
+    bookings: [{guest: String, start: Number, end: Number}],
     tags: [{type: String}]
 })
 

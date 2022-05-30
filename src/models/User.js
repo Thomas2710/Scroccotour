@@ -11,6 +11,8 @@ const user = mongoose.Schema({
 	paesi_visitati: Number,
 	tour_completati: Number,
 	guest_accolti: Number,
+	recensioni_come_host: [{type: Object}],
+	recensioni_come_guest: [{type: Object}],
 	tour_preferiti: [{type : String}],
 })
 

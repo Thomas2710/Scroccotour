@@ -7,30 +7,47 @@ const Tour = require("../../models/Tour")
 const User = require("../../models/User") // new
 const router = express.Router()
 const jwt = require('jsonwebtoken'); 
+const { update } = require("../../models/Tour");
+const Home = require("../../models/Home");
 
 
 //Function that saves unfinished Tours and/or book the entire Tour. Returns the updated Tour object
-const saveTour = async (updatedTour, shouldBook) => {
+const saveTour = async (updatedTour, shouldBook, guestId) => {
     const tourToUpdate = await Tour.findById(updatedTour._id);
 
     tourToUpdate.cities = updatedTour.cities;
     tourToUpdate.homes = updatedTour.homes;
+    tourToUpdate.dates = updatedTour.dates;
 
     if (shouldBook) {
         tourToUpdate.booked = 1;
+
+        for (let i = 0; i < tourToUpdate.homes.length; i++) {
+            const home = await Home.findById(tourToUpdate.homes[i]);
+
+            home.bookings.push({
+                guest: guestId,
+                start: updatedTour.dates[i].start,
+                end: updatedTour.dates[i].end,
+            })
+
+            await home.save();
+        }
     }
 
     const savedTour = await tourToUpdate.save();
+    console.log(savedTour);
     return savedTour;
 }
 
 //Funzione che aggiunge a un tour nel DB un alloggio
-const updateTour = async (tourId, cityId, city ) => {
+const updateTour = async (tourId, cityId, city, start, end, nights ) => {
     const tourToUpdate = await Tour.findById(tourId);
 
     tourToUpdate.homes.push(cityId);
     tourToUpdate.cities.push(city);
-    
+    tourToUpdate.dates.push({start: start, end: end});
+    tourToUpdate.nights_remaining -= nights/(60*60*24*1000);
 
     const savedTour = await tourToUpdate.save();
     return savedTour;
@@ -53,6 +70,7 @@ router.post("/newtour", async (req, res) => {
             people: req.body.people,
             cities: [],
             homes: [],
+            dates: [],
             likes: 0,
             completed: 0,
             booked: 0,
@@ -66,6 +84,15 @@ router.post("/newtour", async (req, res) => {
         const tour = await Tour.find({completed: 1});
         const randomtour = tour[Math.floor(Math.random() * tour.length)];
         
+        let dates = [];
+        for (let i = 0; i < randomtour.cities.length; i++) {
+            dates.push({
+                guest: "",
+                start: 0,
+                end: 0
+            })
+        }
+
         json = {
             name: "Tour",
             owner: req.User.user.username,
@@ -74,13 +101,12 @@ router.post("/newtour", async (req, res) => {
             people: req.body.people,
             cities: randomtour.cities,
             homes: randomtour.cities,
+            dates: dates,
             likes: 0,
             completed: 0,
             booked: 0,
             nights_remaining: (end-start)/(60*60*24)
         }
-
-
     }
     var u = new Tour(json)
     
@@ -105,7 +131,7 @@ router.post('/save', async (req, res) => {
     }
 
     const updatedTour = JSON.parse(req.body.tour);
-    const newTour = await saveTour(updatedTour, false);
+    const newTour = await saveTour(updatedTour, false, "");
 
     res.send(newTour)
 })
@@ -116,9 +142,11 @@ router.post('/book', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro tour mancante'});
     }
+
+    const guest = req.User.user.username;
  
     const updatedTour = JSON.parse(req.body.tour);
-    const newTour = await saveTour(updatedTour, true);
+    const newTour = await saveTour(updatedTour, true, guest);
 
     res.send(newTour)
 })
@@ -132,6 +160,14 @@ router.post('/copy', async (req, res) => {
 
     const targetTour = await Tour.findById(tourId);
 
+    let dates = [];
+    for (let i = 0; i < randomtour.cities.length; i++) {
+        dates.push({
+            guest: "",
+            start: 0,
+            end: 0
+        })
+    }
 
     const newTour = await Tour({
         name: "Tour",
@@ -141,6 +177,7 @@ router.post('/copy', async (req, res) => {
         people: req.body.people,
         cities: targetTour.cities,
         homes: targetTour.cities, // Not a bug, this way homes are just placeholders
+        dates: dates,
         likes: 0,
         completed: 0,
         booked: 0,
@@ -197,11 +234,11 @@ router.post('/addCity', async (req, res) => {
         res.status(404);
         res.json({success: false, message: 'Parametro endDate mancante'});
     }
-    if (! req.body.end) {
+    if (! req.body.city) {
         res.status(404);
         res.json({success: false, message: 'Parametro città mancante'});
     }
-    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city);
+    const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city, req.body.start, req.body.end, req.body.nights);
     res.status(200);
     res.send(newTour);
 })
