@@ -64,7 +64,9 @@ router.post("/register", async (req, res) => {
 		meta_preferita: "Nessuna",
 		paesi_visitati: 0,
 		tour_completati:0,
-		guest_accolti:0
+		guest_accolti:0,
+		recensioni_come_guest: [],
+		recensioni_come_host: []
 	})
 	await u.save()
 	res.status(200)

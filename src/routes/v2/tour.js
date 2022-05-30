@@ -250,6 +250,7 @@ router.get("/getTour", async (req, res) => {
     res.send(tour);
 })
 
+
 router.get("/searchTour", async (req, res) => {
     const tours = await Tour.find({name: req.query.name, completed: 1});
     res.send(tours);
