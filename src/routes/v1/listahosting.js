@@ -25,10 +25,7 @@ router.get("/dettaglio", async (req, res) => {
 //Returns the retrieved documents
 router.post("/alloggi", async (req, res) => {
     r = {city: req.body.city}
-    console.log(req.body.tags)
     if(req.body.start != undefined && req.body.end != undefined){
-        console.log(start)
-        console.log(end)
         var start = Number(req.body.start)
         var end = Number(req.body.end)
         r["start"] = {$lte: start}
@@ -36,7 +33,6 @@ router.post("/alloggi", async (req, res) => {
     }
 
     if(req.body.tags != undefined){
-        console.log(req.body.tags)
         t = req.body.tags
         r["tags"] = {$all: t}
     }

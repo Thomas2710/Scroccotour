@@ -12,11 +12,11 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 router.post('/addHostReview', async (req, res) => {
     
     if (! req.body.home){
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro città mancante'});
     }
     if (! req.body.host){ 
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'username host mancante'});
     }
     let ordine, ospitalita, puntualità, generale, commento
@@ -64,7 +64,7 @@ router.post('/addHostReview', async (req, res) => {
 })
 router.post('/addGuestReview', async (req, res) => {
     if (! req.body.guest){ 
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'username guest mancante'});
     }
     
@@ -102,15 +102,21 @@ router.post('/addGuestReview', async (req, res) => {
 })
 
 router.post('/getHomeReviews', async (req, res) => {
+    if(! req.body.id){
+        res.status(400)
+        res.json("Missing home id")
+        return
+    }
     var home = await Home.findById(req.body.id)
     var list = []
     var host = await User.findOne({username: home.host})
-    
     host.recensioni_come_host.forEach(rev => {
-        if(rev.home == req.body.id){
+        if(rev.home == home.city){
             list.push(rev)
         }
     })
+    
+    res.status(200)
     res.send(list)
 })
 
@@ -142,6 +148,7 @@ router.get('/getHostToReview',async(req,res)=>{
     }
     const l = new Set(list)
     const json = JSON.stringify(Array.from(l))
+    res.status(200)
     res.send(json)
 })
 router.get('/getGuestToReview',async(req,res)=>{
