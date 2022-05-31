@@ -102,6 +102,11 @@ router.post('/addGuestReview', async (req, res) => {
 })
 
 router.post('/getHomeReviews', async (req, res) => {
+    if(! req.body.id){
+        res.status(400)
+        res.send("Missing id")
+        return
+    }
     var home = await Home.findById(req.body.id)
     var list = []
     var host = await User.findOne({username: home.host})
