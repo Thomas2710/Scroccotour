@@ -321,7 +321,7 @@ router.get("/topTour", async (req, res) => {
 
 router.get("/myTours", async (req, res) => {
     const user = req.User.user.username;
-    const myTours = await Tour.find({owner : user, booked : 1});
+    const myTours = await Tour.find({owner : user});
     res.status(200);
     res.send(myTours);
 })
