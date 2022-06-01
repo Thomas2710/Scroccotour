@@ -55,13 +55,17 @@ app.locals.db = mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true
     
     console.log("Connected to Database");
     // Start server
+
     if(process.env.NODE_ENV =! "test"){
+
       app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
         console.log(`Scroccotour server started`)
       });
     }
     
+
 });
 
 module.exports = app
+
 

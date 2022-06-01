@@ -1,5 +1,5 @@
 ///
-/// This files contains the backend APIs regarding the login and register functionalities
+/// This files contains the backend APIs regarding the review functionalities
 ///
 
 const express = require("express")
@@ -7,16 +7,19 @@ const User = require("../../models/User")
 const Tour = require("../../models/Tour") 
 const Home = require("../../models/Home")
 const router = express.Router()
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const jwt = require('jsonwebtoken'); 
 
+
+//Route that allow the user to create a new review about an Host he was hosted by during a Tour
+//If the core parameters are present (host username and city) the review is saved
 router.post('/addHostReview', async (req, res) => {
     
     if (! req.body.home){
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro città mancante'});
     }
     if (! req.body.host){ 
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'username host mancante'});
     }
     let ordine, ospitalita, puntualità, generale, commento
@@ -62,9 +65,11 @@ router.post('/addHostReview', async (req, res) => {
     res.send({success: true})
 
 })
+//Route that allow the user to create a new review about a Guest that was hosted by the user
+//If the core parameter is present (host username ) the review is saved
 router.post('/addGuestReview', async (req, res) => {
     if (! req.body.guest){ 
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'username guest mancante'});
     }
     
@@ -100,7 +105,8 @@ router.post('/addGuestReview', async (req, res) => {
     await guest.save()
     res.send({success: true})
 })
-
+//Route that query for the reviews of an host (given the Home id)
+//Returns a list of reviews
 router.post('/getHomeReviews', async (req, res) => {
     if(! req.body.id){
         res.status(400)
@@ -110,15 +116,17 @@ router.post('/getHomeReviews', async (req, res) => {
     var home = await Home.findById(req.body.id)
     var list = []
     var host = await User.findOne({username: home.host})
-    
     host.recensioni_come_host.forEach(rev => {
-        if(rev.home == req.body.id){
+        if(rev.home == home.city){
             list.push(rev)
         }
     })
+    
+    res.status(200)
     res.send(list)
 })
-
+//Route that query for the review of Host that the user can make
+//Returns a list of pairs (host,city) to allow the user to create such reviews
 router.get('/getHostToReview',async(req,res)=>{
     var tour = await Tour.find({owner: req.User.user.username, completed: 1, booked: 1})
     var alloggi = []
@@ -147,8 +155,11 @@ router.get('/getHostToReview',async(req,res)=>{
     }
     const l = new Set(list)
     const json = JSON.stringify(Array.from(l))
+    res.status(200)
     res.send(json)
 })
+//Route that query for the review of Guests that the user can make
+//Returns a list of Guests usernames to allow the user to create such reviews
 router.get('/getGuestToReview',async(req,res)=>{
     var home = await Home.find({owner: req.User.user.username})
     var guests = []
@@ -185,11 +196,14 @@ router.get('/getGuestToReview',async(req,res)=>{
     const json = JSON.stringify(Array.from(l))
     res.send(json)
 })
-
+//Route that query for the reviews as host that the user received
+//Returns a list of reviews
 router.get('/getreviewsashost',async(req,res)=>{
     var u = await User.findById(req.User.id)
     res.json(u.recensioni_come_host)
 })
+//Route that query for the reviews as guest that the user received
+//Returns a list of reviews
 router.get('/getreviewsasguest',async(req,res)=>{
     var u = await User.findById(req.User.id)
     res.json(u.recensioni_come_guest)
