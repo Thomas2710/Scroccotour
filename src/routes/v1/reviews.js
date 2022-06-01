@@ -110,7 +110,7 @@ router.post('/addGuestReview', async (req, res) => {
 router.post('/getHomeReviews', async (req, res) => {
     if(! req.body.id){
         res.status(400)
-        res.json("Missing home id")
+        res.send("Missing id")
         return
     }
     var home = await Home.findById(req.body.id)
