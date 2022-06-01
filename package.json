@@ -4,7 +4,7 @@
   "description": "Applicazione di travel planning con all-in-one booking feature",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test":  "NODE_ENV=test jest --setupFiles dotenv/config",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
@@ -27,6 +27,8 @@
     "mongoose": "^6.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "jest": "^28.1.0",
+    "nodemon": "^2.0.16",
+    "supertest": "^6.2.3"
   }
 }

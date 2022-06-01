@@ -220,23 +220,23 @@ router.post('/edit', async (req, res) => {
 //Returns the updated Tour object
 router.post('/addCity', async (req, res) => {
     if (! req.body.tourId) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro tour mancante'});
     }
     if (! req.body.cityId) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro alloggio mancante'});
     }
     if (! req.body.start) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro startDate mancante'});
     }
     if (! req.body.end) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro endDate mancante'});
     }
     if (! req.body.city) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro città mancante'});
     }
     const newTour = await updateTour(req.body.tourId, req.body.cityId, req.body.city, req.body.start, req.body.end, req.body.nights);
@@ -246,14 +246,32 @@ router.post('/addCity', async (req, res) => {
 //Route that allow to retrieve a Tour document given its id
 //Returns the Tour object
 router.get("/getTour", async (req, res) => {
-    const tour = await Tour.findById( req.query.id);
-    res.send(tour);
+    if(req.query.id == null){
+        res.status(400)
+        res.json({success: false, message: "Parametro id mancante"})
+    }
+    else{
+        const tour = await Tour.findById( req.query.id);
+        if(tour == null){
+            res.status(404)
+            res.json({success: false, message: "Tour non trovato"})  
+        }
+        else{
+        res.send(tour);
+        }
+    }
 })
 
 
 router.get("/searchTour", async (req, res) => {
-    const tours = await Tour.find({name: req.query.name, completed: 1});
-    res.send(tours);
+    if(req.query.name == null){
+        res.status(400)
+        res.json({success: false, message: "Parametro name mancante"})
+    }
+    else{
+        const tours = await Tour.find({name: req.query.name, completed: 1});
+        res.send(tours);
+    }
 })
 
 //Aggiunge un like di un utente a un tour
