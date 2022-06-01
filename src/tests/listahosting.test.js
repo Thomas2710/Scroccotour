@@ -3,7 +3,7 @@ const express = require('express');
 const app = require('../index.js');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const User = require("../models/User")
+const User = require("../models/User");
 
 test('Test /api/v1/lista-hosting/ without token', () => {
     return request(app).get('/api/v1/lista-hosting/')
