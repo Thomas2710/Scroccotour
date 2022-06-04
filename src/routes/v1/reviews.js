@@ -181,11 +181,11 @@ router.get('/getGuestToReview',async(req,res)=>{
                     var u = await User.findOne({username: b.guest})
                     var flag = 0
                     for(var k of u.recensioni_come_guest){
-                        if(k.da == req.User.user.username){
+                        if(k.da == req.User.user.username ){
                             flag = 1
                         }
                     }
-                    if(flag==0){
+                    if(flag==0 && req.User.user.username != u.username){
                         guests.push(b.guest)
                     }
                 }
