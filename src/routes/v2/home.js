@@ -89,4 +89,14 @@ router.post("/", async (req, res) => {
     }
 })
 
+
+router.get("/listaPrenotazioni", async (req, res) => {
+    console.log("id essere tipo"+req.query.id);
+    //const alloggio = await Home.findById(req.query.id)
+    //res.status(200).send(alloggio)
+    res.status(400).send();
+})
+
+
+
 module.exports = router

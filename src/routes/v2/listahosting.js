@@ -42,4 +42,6 @@ router.post("/alloggi", async (req, res) => {
     //console.log(alloggi)
     res.send(alloggi)
 })
+
+
 module.exports = router
