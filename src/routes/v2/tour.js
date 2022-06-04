@@ -253,7 +253,7 @@ router.get("/getTour", async (req, res) => {
     else{
         const tour = await Tour.findById( req.query.id);
         if(tour == null){
-            res.status(404)
+            res.status(400)
             res.json({success: false, message: "Tour non trovato"})  
         }
         else{
