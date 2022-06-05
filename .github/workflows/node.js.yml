@@ -20,6 +20,17 @@ jobs:
     env:
       JWT_KEY: ${{ secrets.JWT_KEY }} # Must be set as a GitHub secret
       MONGODB_URI: ${{ secrets.MONGODB_URI }} # Must be set as a GitHub secret
+      ALLOWED_ORIGIN: ${{ secrets.ALLOWED_ORIGIN }}
+      PORT: ${{ secrets.PORT}}
+      TESTS_USERNAME: ${{ secrets.TESTS_USERNAME }}
+      TESTS_PASSWORD: ${{ secrets.TESTS_PASSWORD }}
+      TESTS_EMAIL: ${{ secrets.TESTS_EMAIL }}
+      TESTS_TOURID: ${{ secrets.TESTS_TOURID }}
+      TESTS_WRONG_TOURID: ${{ secrets.TESTS_WRONG_TOURID }}
+      TESTS_NAME: ${{ secrets.TESTS_NAME }}
+      TESTS_WRONG_NAME: ${{ secrets.TESTS_WRONG_NAME }}
+      TESTS_LIKED_TOUR: ${{ secrets.TESTS_LIKED_TOUR }}
+      TESTS_NON_LIKED_TOUR: ${{ secrets.TESTS_NON_LIKED_TOUR }}
 
     strategy:
       matrix:
