@@ -4,7 +4,7 @@
   "description": "Applicazione di travel planning con all-in-one booking feature",
   "main": "src/index.js",
   "scripts": {
-    "test":  "NODE_ENV=test jest --setupFiles dotenv/config",
+    "test":  "NODE_ENV=test jest --detectOpenHandles --setupFiles dotenv/config --forceExit",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
