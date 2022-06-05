@@ -13,7 +13,6 @@ test('Test /api/v1/reviews/ without token', () => {
 
 
 describe('Test /api/v1/reviews/getGuestToReview', () => {
-    
     test('GET /api/v1/reviews/getGuestToReview', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -102,7 +101,7 @@ describe('Test /api/v1/reviews/getHomeReviews', () => {
             expiresIn: 86400 // expires in 24 hours
         }
         var token = jwt.sign(payload, process.env.JWT_KEY, options);
-        var id = "628ba0a38ac754889c4aec10"
+        var id = "629bc35cb19de4ec6725df5e"
         return request(app).post('/api/v1/reviews/getHomeReviews')
             .send({id:id})
             .set('Authorization', 'Bearer ' + token)
