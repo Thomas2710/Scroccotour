@@ -127,7 +127,7 @@ router.post("/newtour", async (req, res) => {
 //Returns the Tour object
 router.post('/save', async (req, res) => {
     if (! req.body.tour) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro tour mancante'});
     }
 
@@ -140,7 +140,7 @@ router.post('/save', async (req, res) => {
 //Returns the updated Tour object
 router.post('/book', async (req, res) => {
     if (! req.body.tour) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro tour mancante'});
     }
 
@@ -155,14 +155,23 @@ router.post('/book', async (req, res) => {
 //Returns the tour object
 router.post('/copy', async (req, res) => {
     if (! req.body.tourId) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro tourId mancante'});
+        return;
     }
 
-    const targetTour = await Tour.findById(tourId);
-
+    let targetTour;
+    try {
+        targetTour = await Tour.findById(req.body.tourId);
+    } catch (error) {
+        console.log(error);
+        res.status(400);
+        res.json({success: false, message: 'Tour inesistente'});
+        return;
+    }
+    
     let dates = [];
-    for (let i = 0; i < randomtour.cities.length; i++) {
+    for (let i = 0; i < targetTour.cities.length; i++) {
         dates.push({
             guest: "",
             start: 0,
@@ -170,29 +179,29 @@ router.post('/copy', async (req, res) => {
         })
     }
 
-    const newTour = await Tour({
+    const copied = await Tour({
         name: "Tour",
         owner: req.User.user.username,
-        start: req.body.start,
-        end: req.body.end,
-        people: req.body.people,
+        start: targetTour.start,
+        end: targetTour.end,
+        people: targetTour.people,
         cities: targetTour.cities,
         homes: targetTour.cities, // Not a bug, this way homes are just placeholders
         dates: dates,
         likes: 0,
         completed: 0,
         booked: 0,
-        nights_remaining: (req.body.end - req.body.start)/(60*60*24)
+        nights_remaining: (targetTour.end - targetTour.start)/(60*60*24)
     })
 
-
-    res.send(newTour)
+    const tour = await copied.save();
+    res.send(tour)
 })
 //Route that modifies a tour
 //Returns the tour object
 router.post('/edit', async (req, res) => {
     if (! req.body.tourId) {
-        res.status(404);
+        res.status(400);
         res.json({success: false, message: 'Parametro tourId mancante'});
     }
 
