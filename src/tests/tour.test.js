@@ -90,7 +90,7 @@ describe('Test /api/v2/tour/getTour', () => {
         return request(app).get('/api/v2/tour/getTour')
             .query({id: process.env.TESTS_WRONG_TOURID})
             .set('Authorization', 'Bearer ' + token)
-            .expect(404)
+            .expect(400)
     })
 })
 
