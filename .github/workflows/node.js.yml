@@ -18,8 +18,8 @@ jobs:
     environment: production
 
     env:
-      SUPER_SECRET: ${{ secrets.SUPER_SECRET }} # Must be set as a GitHub secret
-      DB_URL: ${{ secrets.DB_URL }} # Must be set as a GitHub secret
+      JWT_KEY: ${{ secrets.JWT_KEY }} # Must be set as a GitHub secret
+      MONGODB_URI: ${{ secrets.MONGODB_URI }} # Must be set as a GitHub secret
 
     strategy:
       matrix:
