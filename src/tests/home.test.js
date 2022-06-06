@@ -8,9 +8,9 @@ const Home = require("../models/Home")
 
 
 describe('Test /api/v1/home/', () => {
-    beforeAll( async () => { jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
-    afterAll( () => { mongoose.connection.close(true); });
+    //beforeAll( async () => { jest.setTimeout(8000);
+        //app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
+    //afterAll( () => { mongoose.connection.close(true); });
     
     
     /*var home = {
@@ -214,7 +214,42 @@ describe('Test /api/v1/home/', () => {
             .send(home)
             .expect(500);
     });
-    
-   
 })
+
+describe('Test /api/v2/home/listaPrenotazioni', () => {
+
+    test('GET /api/v2/home/listaPrenotazioni passing id', async () => {
+        var user = await User.findOne({ username: process.env.TESTS_USERNAME})
+        var payload = {
+            user: user,
+            id: user._id,
+            // other data encrypted in the token	
+        }
+        var options = {
+            expiresIn: 86400 // expires in 24 hours
+        }
+        var token = jwt.sign(payload, process.env.JWT_KEY, options);
+        return request(app).get('/api/v2/home/listaPrenotazioni')
+            .query({id: process.env.TESTS_ALLOGGIO})
+            .set('Authorization', 'Bearer ' + token)
+            .expect(200)
+    })
+
+    test('GET /api/v2/home/listaPrenotazioni not passing id', async () => {
+        var user = await User.findOne({ username: process.env.TESTS_USERNAME})
+        var payload = {
+            user: user,
+            id: user._id,
+            // other data encrypted in the token	
+        }
+        var options = {
+            expiresIn: 86400 // expires in 24 hours
+        }
+        var token = jwt.sign(payload, process.env.JWT_KEY, options);
+        return request(app).get('/api/v2/home/listaPrenotazioni')
+            .set('Authorization', 'Bearer ' + token)
+            .expect(400)
+    })
+})
+
 

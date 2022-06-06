@@ -61,3 +61,5 @@ describe('Test /api/v1/auth/register', () => {
             .expect(400,{ success: false, message: 'Registratione fallita' });
     });*/
 })
+
+

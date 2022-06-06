@@ -5,6 +5,18 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require("../models/User");
 
+test('Test /api/v1/tour/ without token', () => {
+    return request(app).get('/api/v1/tour/')
+        .expect(500)
+});
+test('Test /api/v1/tour/ without token', () => {
+    return request(app).get('/api/v2/tour/')
+        .expect(500)
+});
+
+
+
+
 
 describe('Test /api/v1/tour/getTour', () => {
     test('GET /api/v1/tour/getTour passing id', async () => {
