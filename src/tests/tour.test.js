@@ -4,21 +4,21 @@ const app = require('../index.js');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require("../models/User");
-
+beforeAll( async () => { 
+    app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
+afterAll( async () => { await mongoose.connection.close(true);});
 test('Test /api/v1/tour/ without token', () => {
     return request(app).get('/api/v1/tour/')
         .expect(500)
 });
-test('Test /api/v1/tour/ without token', () => {
-    return request(app).get('/api/v2/tour/')
-        .expect(500)
-});
+
 
 
 
 
 
 describe('Test /api/v1/tour/getTour', () => {
+   
     test('GET /api/v1/tour/getTour passing id', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -55,6 +55,7 @@ describe('Test /api/v1/tour/getTour', () => {
 })
 
 describe('Test /api/v2/tour/getTour', () => {
+
     test('GET /api/v2/tour/getTour passing id', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -107,6 +108,7 @@ describe('Test /api/v2/tour/getTour', () => {
 })
 
 describe('Test /api/v2/tour/searchTour', () => {
+
     test('GET /api/v2/tour/searchTour passing name', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -161,6 +163,7 @@ describe('Test /api/v2/tour/like', () => {
 })
 */
 describe('Test /api/v2/tour/isFavourite', () => {
+
     test('GET /api/v2/tour/isFavourite passing an already liked(favourite) tour', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -197,6 +200,7 @@ describe('Test /api/v2/tour/isFavourite', () => {
 })
 
 describe('Test /api/v2/tour/topTour', () => {
+
     test('GET /api/v2/tour/topTour', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -215,6 +219,7 @@ describe('Test /api/v2/tour/topTour', () => {
 })
 
 describe('Test /api/v2/tour/myTours', () => {
+
     test('GET /api/v2/tour/myTours', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {

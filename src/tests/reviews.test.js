@@ -4,7 +4,9 @@ const app = require('../index.js');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require("../models/User")
-
+beforeAll( async () => { 
+    app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
+afterAll( async () => { await mongoose.connection.close(true);});
 test('Test /api/v1/reviews/ without token', () => {
     return request(app).get('/api/v1/reviews/')
         .expect(500)
@@ -13,6 +15,7 @@ test('Test /api/v1/reviews/ without token', () => {
 
 
 describe('Test /api/v1/reviews/getGuestToReview', () => {
+
     test('GET /api/v1/reviews/getGuestToReview', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -31,7 +34,7 @@ describe('Test /api/v1/reviews/getGuestToReview', () => {
 
 })
 describe('Test /api/v1/reviews/getHostToReview', () => {
-    
+
     test('GET /api/v1/reviews/getHostToReview', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -50,7 +53,7 @@ describe('Test /api/v1/reviews/getHostToReview', () => {
 
 })
 describe('Test /api/v1/reviews/getreviewsashost', () => {
-    
+
     test('GET /api/v1/reviews/getreviewsashost', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -69,7 +72,7 @@ describe('Test /api/v1/reviews/getreviewsashost', () => {
 
 })
 describe('Test /api/v1/reviews/getreviewsasguest', () => {
-    
+
     test('GET /api/v1/reviews/getreviewsasguest', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
@@ -89,7 +92,7 @@ describe('Test /api/v1/reviews/getreviewsasguest', () => {
 })
 
 describe('Test /api/v1/reviews/getHomeReviews', () => {
-    
+
     test('GET /api/v1/reviews/getHomeReviews with home id', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {

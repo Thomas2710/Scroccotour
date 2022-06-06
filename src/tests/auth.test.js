@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require("../models/User")
 describe('Test /api/v1/auth/login', () => {
-    beforeAll( async () => { jest.setTimeout(10000);
+    beforeAll( async () => { 
         app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
-    afterAll( () => { mongoose.connection.close(true); });
+    afterAll( async () => { await mongoose.connection.close(true);});
     test('POST /api/v1/auth/login with correct credentials', () => {
         var credentials = {
             username: process.env.TESTS_USERNAME,

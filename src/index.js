@@ -49,6 +49,11 @@ app.use("/api/v2/home", home_v2)
 app.use("/api/v2/tour", tokenChecker)
 app.use("/api/v2/tour", tour_v2)
 
+if(process.env.NODE_ENV !== "test"){
+
+  
+
+
 app.locals.db = mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 
 .then ( () => {
@@ -56,15 +61,13 @@ app.locals.db = mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true
     console.log("Connected to Database");
     // Start server
 
-    if(process.env.NODE_ENV !== "test"){
-
-      app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
-        console.log(`Scroccotour server started`)
-      });
-    }
+    app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
+    console.log(`Scroccotour server started`)
+  });
     
 
 });
+}
 
 module.exports = app
 

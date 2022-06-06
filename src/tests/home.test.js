@@ -6,8 +6,11 @@ const mongoose = require('mongoose');
 const User = require("../models/User")
 const Home = require("../models/Home")
 
-
+beforeAll( async () => { 
+    app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
+afterAll( async () => { await mongoose.connection.close(true);});
 describe('Test /api/v1/home/', () => {
+    
     //beforeAll( async () => { jest.setTimeout(8000);
         //app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
     //afterAll( () => { mongoose.connection.close(true); });
