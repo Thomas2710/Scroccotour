@@ -51,7 +51,7 @@ describe('Test /api/v1/reviews/getHostToReview', () => {
 })
 describe('Test /api/v1/reviews/getreviewsashost', () => {
     
-    test('POST /api/v1/reviews/getreviewsashost', async () => {
+    test('GET /api/v1/reviews/getreviewsashost', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
             user: user,
@@ -70,7 +70,7 @@ describe('Test /api/v1/reviews/getreviewsashost', () => {
 })
 describe('Test /api/v1/reviews/getreviewsasguest', () => {
     
-    test('POST /api/v1/reviews/getreviewsasguest', async () => {
+    test('GET /api/v1/reviews/getreviewsasguest', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
             user: user,
@@ -102,8 +102,8 @@ describe('Test /api/v1/reviews/getHomeReviews', () => {
         }
         var token = jwt.sign(payload, process.env.JWT_KEY, options);
         var id = "629bc35cb19de4ec6725df5e"
-        return request(app).post('/api/v1/reviews/getHomeReviews')
-            .send({id:id})
+        return request(app).get('/api/v1/reviews/getHomeReviews')
+            .query({id:id})
             .set('Authorization', 'Bearer ' + token)
             .expect(200);
     });
@@ -119,7 +119,7 @@ describe('Test /api/v1/reviews/getHomeReviews', () => {
             expiresIn: 86400 // expires in 24 hours
         }
         var token = jwt.sign(payload, process.env.JWT_KEY, options);
-        return request(app).post('/api/v1/reviews/getHomeReviews')
+        return request(app).get('/api/v1/reviews/getHomeReviews')
             .set('Authorization', 'Bearer ' + token)
             .expect(400);
     });

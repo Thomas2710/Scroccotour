@@ -107,13 +107,13 @@ router.post('/addGuestReview', async (req, res) => {
 })
 //Route that query for the reviews of an host (given the Home id)
 //Returns a list of reviews
-router.post('/getHomeReviews', async (req, res) => {
-    if(! req.body.id){
+router.get('/getHomeReviews', async (req, res) => {
+    if(! req.query.id){
         res.status(400)
         res.send("Missing id")
         return
     }
-    var home = await Home.findById(req.body.id)
+    var home = await Home.findById(req.query.id)
     var list = []
     var host = await User.findOne({username: home.host})
     host.recensioni_come_host.forEach(rev => {

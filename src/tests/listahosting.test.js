@@ -30,7 +30,7 @@ describe('Test /api/v1/lista-hosting/myalloggi', () => {
 })
 describe('Test /api/v1/lista-hosting/alloggi', () => {
 
-    test('POST /api/v1/lista-hosting/alloggi with all parameters', async () => {
+    test('GET /api/v1/lista-hosting/alloggi with all parameters', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})
         var payload = {
             user: user,
@@ -51,16 +51,14 @@ describe('Test /api/v1/lista-hosting/alloggi', () => {
         }
         return request(app).post('/api/v1/lista-hosting/alloggi')
             .set('Authorization', 'Bearer ' + token)
-            .send(alloggio)
+            .query(alloggio)
             .expect(200);
 });
 });
 
 
 describe('Test /api/v1/lista-hosting/dettaglio', () => {
-    beforeAll( async () => { jest.setTimeout(50000);
-        app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
-    afterAll( () => { mongoose.connection.close(true); });
+   
     
     test('GET /api/v1/lista-hosting/dettaglio with existing id', async () => {
         var user = await User.findOne({ username: process.env.TESTS_USERNAME})

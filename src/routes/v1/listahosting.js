@@ -23,17 +23,17 @@ router.get("/dettaglio", async (req, res) => {
 //Function that retrieves all the homes in a specific city. 
 //If tags or/and date of start/end of availability of the home is given in the body they are also accounted for the query 
 //Returns the retrieved documents
-router.post("/alloggi", async (req, res) => {
-    r = {city: req.body.city}
-    if(req.body.start != undefined && req.body.end != undefined){
-        var start = Number(req.body.start)
-        var end = Number(req.body.end)
+router.get("/alloggi", async (req, res) => {
+    r = {city: req.query.city}
+    if(req.query.start != undefined && req.query.end != undefined){
+        var start = Number(req.query.start)
+        var end = Number(req.query.end)
         r["start"] = {$lte: start}
         r["end"] = {$gte: end}
     }
 
-    if(req.body.tags != undefined){
-        t = req.body.tags
+    if(req.query.tags != undefined){
+        t = req.query.tags
         r["tags"] = {$all: t}
     }
     //console.log(r);

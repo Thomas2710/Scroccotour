@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require("../models/User")
 describe('Test /api/v1/auth/login', () => {
-    beforeAll( async () => { jest.setTimeout(8000);
+    beforeAll( async () => { jest.setTimeout(10000);
         app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
     afterAll( () => { mongoose.connection.close(true); });
     test('POST /api/v1/auth/login with correct credentials', () => {
@@ -38,12 +38,7 @@ describe('Test /api/v1/auth/login', () => {
 })
 
 describe('Test /api/v1/auth/register', () => {
-    beforeAll( async () => { jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.MONGODB_URI); });
-        jest.spyOn(User,"create").mockImplementation((criterias) => {
-            return criterias;
-            });
-       afterAll( () => { mongoose.connection.close(true); });
+
     
     test('POST /api/v1/auth/register with already present username', () => {
         var credentials = {
