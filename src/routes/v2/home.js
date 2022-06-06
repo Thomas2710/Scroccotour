@@ -92,8 +92,9 @@ router.post("/", async (req, res) => {
 
 router.get("/listaPrenotazioni", async (req, res) => {
    	if(req.query.id !== undefined){
+     console.log(req.query.id);
    	 const alloggio = await Home.findById(req.query.id)
-	 res.status(200).send(alloggio)
+	 res.status(200).send(alloggio);
 	 }
 	 else{
 	 res.status(400);
