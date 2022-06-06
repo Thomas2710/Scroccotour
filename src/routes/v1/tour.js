@@ -160,28 +160,6 @@ router.get("/getTour", async (req, res) => {
     }
 })
 
-router.post("/favourite", async (req, res) =>{
-    const user = req.User.user.username;
-    const utente = await User.findById(user);
-    if(utente.tour_preferiti.includes(req.tourId)){
-        res.status(400);
-        res.json({success: false, message: "Tour già messo nei preferiti"})
-    }
-    else{
-        utente.tour_preferiti.push(req.tourId);
-        const utenteUpdated = await utente.save();
-
-        const tour = await Tour.findById(req.tourId);
-        tour.likes +=1;
-        const updatedTour = await tour.save();
-
-
-        res.status(200);
-        res.send(updatedTour);
-    }
-    
-})
-
 router.get("/topTour", async (req, res) => {
     const tours = await Tour.find({completed: 1});
     tours.sort((a,b) => {

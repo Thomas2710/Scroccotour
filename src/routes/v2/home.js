@@ -91,9 +91,21 @@ router.post("/", async (req, res) => {
 
 
 router.get("/listaPrenotazioni", async (req, res) => {
-    const alloggio = await Home.findById(req.query.id)
-    res.status(200).send(alloggio)
-})
+   	if(req.query.id !== undefined){
+   	 const alloggio = await Home.findById(req.query.id)
+	 res.status(200).send(alloggio)
+	 }
+	 else{
+	 res.status(400);
+	 res.json({
+            success: false,
+            message: "Alloggio già esistente"
+        })
+	 
+	 }
+	    
+    
+});
 
 
 
