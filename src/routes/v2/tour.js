@@ -346,6 +346,7 @@ router.get("/topTour", async (req, res) => {
 
 })
 
+//Ritorna i tour a nome dell'utente
 router.get("/myTours", async (req, res) => {
     const user = req.User.user.username;
     const myTours = await Tour.find({owner : user});
