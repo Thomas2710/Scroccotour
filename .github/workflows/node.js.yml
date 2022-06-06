@@ -31,6 +31,7 @@ jobs:
       TESTS_WRONG_NAME: ${{ secrets.TESTS_WRONG_NAME }}
       TESTS_LIKED_TOUR: ${{ secrets.TESTS_LIKED_TOUR }}
       TESTS_NON_LIKED_TOUR: ${{ secrets.TESTS_NON_LIKED_TOUR }}
+      TESTS_ALLOGGIO: ${{secrets.TESTS_ALLOGGIO}}
 
     strategy:
       matrix:
